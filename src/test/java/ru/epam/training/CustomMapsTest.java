@@ -7,6 +7,7 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -127,10 +128,6 @@ public class CustomMapsTest {
         m.put(1, value);
 
         assertFalse(m.containsValue(null));
-    }
-
-    @Test
-    public void testThatMapCanContainsKeysWithSameHashCode() {
     }
 
     @Test

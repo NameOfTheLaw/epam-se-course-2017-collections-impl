@@ -42,6 +42,18 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public V get(Object key) {
+        Objects.requireNonNull(key);
+
+        CustomEntry<K, V> bucket = buckets[0];
+        if (bucket != null) {
+            while (bucket!=null) {
+                System.out.println(bucket.key);
+                if (bucket.key.equals(key)) {
+                    return bucket.value;
+                }
+                bucket = bucket.next;
+            }
+        }
         return null;
     }
 
