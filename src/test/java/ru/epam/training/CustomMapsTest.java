@@ -111,14 +111,8 @@ public class CustomMapsTest {
         m.containsKey(null);
     }
 
-    @Test(expected = ClassCastException.class)
-    public void testThatContainsKeyMethodThrowsExceptionOnWrongKeyClass() {
-        m.put(1, ""); //TODO need to remove
-        m.containsKey(new String(""));
-    }
-
     @Test
-    public void testContainsValueMethodWorksProperlyOn() {
+    public void testContainsValueMethodWorksProperly() {
         String value = "aaaa";
 
         m.put(1, value);
@@ -137,10 +131,6 @@ public class CustomMapsTest {
 
     @Test
     public void testThatMapCanContainsKeysWithSameHashCode() {
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void testValueContainsMethodThrowsExceptionOnWrongInputValueClass() {
     }
 
     @Test

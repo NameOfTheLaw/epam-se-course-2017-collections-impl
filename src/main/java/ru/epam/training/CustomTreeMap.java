@@ -46,16 +46,18 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     @Override
     public V put(K key, V value) {
         Objects.requireNonNull(key);
-        root = put(root, key, value);
-        return value;
+        ValueContainer valueContainer = new ValueContainer(value);
+        root = put(root, key, valueContainer);
+        return valueContainer.oldValue;
     }
 
-    private Node<K, V> put(Node<K, V> node, K key, V value) {
+    private Node<K, V> put(Node<K, V> node, K key, ValueContainer value) {
         if (node == null) {
-            return new Node<>(key, value);
+            return new Node<>(key, value.newValue);
         }
         if (node.key.equals(key)) {
-            node.value = value;
+            value.oldValue = node.value;
+            node.value = value.newValue;
         } else if (node.key.compareTo(key) > 0) {
             node.left = put(node.left, key, value);
         } else {
@@ -120,4 +122,12 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     }
 
+    private class ValueContainer {
+        private V newValue;
+        private V oldValue;
+
+        public ValueContainer(V newValue) {
+            this.newValue = newValue;
+        }
+    }
 }
