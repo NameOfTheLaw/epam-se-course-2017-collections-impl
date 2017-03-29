@@ -7,7 +7,6 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -132,5 +131,10 @@ public class CustomMapsTest {
 
     @Test
     public void testThatMapCalculateItsSizeProperly() {
+        assertThat(m.size(), is(0));
+        for (int i = 0; i < 50; i++) {
+            m.put(i, String.valueOf(i));
+            assertThat(m.size(), is(i+1));
+        }
     }
 }

@@ -7,10 +7,11 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     private static final int DEFAULT_CAPACITY = 16;
 
     private CustomEntry<K, V>[] buckets = new CustomEntry[DEFAULT_CAPACITY];
+    private int size = 0;
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
@@ -64,6 +65,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         V returnedValue = null;
         if (buckets[0] == null) {
             buckets[0] = new CustomEntry<>(key, value);
+            size = 1;
         } else {
             CustomEntry<K, V> bucket = buckets[0];
             while (bucket.hasNext()) {
@@ -74,6 +76,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
                 bucket.value = value;
             } else {
                 bucket.next = new CustomEntry<>(key, value);
+                size++;
             }
         }
         return returnedValue;
@@ -92,6 +95,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public void clear() {
         buckets = new CustomEntry[DEFAULT_CAPACITY];
+        size = 0;
     }
 
     @Override
@@ -126,10 +130,6 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         public CustomEntry<K, V> next() {
             return this.next;
-        }
-
-        void setNext(CustomEntry<K, V> next) {
-            this.next = next;
         }
     }
 }
