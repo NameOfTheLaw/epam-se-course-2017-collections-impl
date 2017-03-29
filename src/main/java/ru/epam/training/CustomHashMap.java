@@ -57,7 +57,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public void clear() {
-
+        buckets = new CustomEntry[DEFAULT_CAPACITY];
     }
 
     @Override
