@@ -1,9 +1,12 @@
 package ru.epam.training;
 
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -14,21 +17,31 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@FixMethodOrder
-public class CustomTreeMapTest {
+@RunWith(Parameterized.class)
+public class CustomMapsTest {
 
     private Map<Integer, String> m;
 
+    public CustomMapsTest(Map<Integer, String> m) {
+        this.m = m;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object> data() {
+        return Arrays.asList(new Object[]{
+                new CustomTreeMap(),
+                new CustomHashMap()
+        });
+    }
+
     @Before
     public void init() {
-        m = new CustomTreeMap<>();
+        m.clear();
     }
 
     @Test
     public void testThatWeCanCreate() {
-
         assertThat(m, is(notNullValue()));
-
     }
 
     @Test
@@ -38,12 +51,12 @@ public class CustomTreeMapTest {
 
     @Test
     public void testThatOnNewMapContainKeyMethodReturnFalseForAnyObject() {
-        assertThat(m.containsKey(new Integer(1)), is(false));
+        assertThat(m.containsKey(1), is(false));
     }
 
     @Test
     public void testThatWeCanPutKeyValuePairAndCanCheckIt() {
-        m.put(new Integer(3), "abc");
+        m.put(3, "abc");
         assertThat(m.containsKey(3), is(true));
     }
 
@@ -82,6 +95,17 @@ public class CustomTreeMapTest {
         assertThat(oldValue, is(equalTo(returnedValue)));
     }
 
+    @Test
+    public void testThatWeCanPut10DifferentKeysInMap() {
+        IntStream.range(1, 10).forEach(
+                i -> m.put(i, String.valueOf(i))
+        );
+
+        IntStream.range(1, 10).forEach(
+                i -> assertTrue(m.containsKey(i))
+        );
+    }
+
     @Test(expected = NullPointerException.class)
     public void testThatContainsKeyMethodThrowsExceptionOnNullKey() {
         m.containsKey(null);
@@ -112,14 +136,7 @@ public class CustomTreeMapTest {
     }
 
     @Test
-    public void testThatWeCanPut10DifferentKeysInMap() {
-        IntStream.range(1, 10).forEach(
-                i -> m.put(i, String.valueOf(i))
-        );
-
-        IntStream.range(1, 10).forEach(
-                i -> assertTrue(m.containsKey(i))
-        );
+    public void testThatMapCanContainsKeysWithSameHashCode() {
     }
 
     @Test(expected = ClassCastException.class)
@@ -129,6 +146,4 @@ public class CustomTreeMapTest {
     @Test
     public void testThatMapCalculateItsSizeProperly() {
     }
-
-
 }
