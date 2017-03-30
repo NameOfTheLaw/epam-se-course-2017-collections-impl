@@ -111,12 +111,14 @@ public class CustomHashMap<K, V> implements Map<K, V> {
             if (currentEntry.key.equals(key)) {
                 returnedValue = currentEntry.value;
                 buckets[index] = currentEntry.next;
+                size--;
                 return returnedValue;
             }
             while (currentEntry.next != null) {
                 if (currentEntry.next.key.equals(key)) {
                     returnedValue = currentEntry.next.value;
                     currentEntry.next = currentEntry.next.next;
+                    size--;
                     return returnedValue;
                 }
                 currentEntry = currentEntry.next;

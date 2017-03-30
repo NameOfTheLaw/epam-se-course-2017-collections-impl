@@ -157,4 +157,18 @@ public class CustomMapsTest {
 
         assertThat(m.remove(key), is(value));
     }
+
+    @Test
+    public void testThatMapCalculatesItsSizeProperlyOnRemoving() {
+        IntStream.range(0, 20)
+                .unordered()
+                .forEach((i) -> m.put(i, String.valueOf(i)));
+
+        IntStream.range(0, 20)
+                .forEach((i) -> {
+                    m.remove(i);
+                    assertThat(m.size(), is(19-i));
+                });
+
+    }
 }

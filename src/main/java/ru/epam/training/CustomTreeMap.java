@@ -83,7 +83,47 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public V remove(Object key) {
-        return null;
+        V returnedValue = null;
+        root = remove(root, (K) key);
+        return returnedValue; //TODO: handle removing value
+    }
+
+    private Node<K,V> remove(Node<K,V> node, K key) {
+        if (node == null) {
+            return null;
+        }
+
+        if (node.key.equals(key)) {
+            size--;
+            if (node.right == null) return node.left;
+            if (node.left == null) return node.right;
+
+            Node<K,V> nodeToDelete = node;
+
+            node = min(nodeToDelete.right);
+            node.right = deleteMin(nodeToDelete.right);
+            node.left = nodeToDelete.left;
+        } else if (node.key.compareTo(key) > 0) {
+            node.left = remove(node.left, key);
+        } else {
+            node.right = remove(node.right, key);
+        }
+        return node;
+    }
+
+    private Node<K, V> deleteMin(Node<K, V> node) {
+        if (node.left == null) {
+            return node.right;
+        }
+        node.left = deleteMin(node.left);
+        return node;
+    }
+
+    private Node<K, V> min(Node<K, V> node) {
+        if (node.left !=null) {
+            return min(node.left);
+        }
+        return node;
     }
 
     @Override
