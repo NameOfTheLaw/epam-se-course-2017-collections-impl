@@ -40,8 +40,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public boolean containsValue(Object value) {
         for (int i = 0; i < capacity; i++) {
-            CustomEntry<K,V> bucket = buckets[i];
-            while (bucket !=null) {
+            CustomEntry<K, V> bucket = buckets[i];
+            while (bucket != null) {
                 if (bucket.value.equals(value)) {
                     return true;
                 }
@@ -102,7 +102,27 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public V remove(Object key) {
-        return null;
+        int index = hash(key);
+
+        CustomEntry<K, V> currentEntry = buckets[index];
+
+        V returnedValue = null;
+        if (currentEntry != null) {
+            if (currentEntry.key.equals(key)) {
+                returnedValue = currentEntry.value;
+                buckets[index] = currentEntry.next;
+                return returnedValue;
+            }
+            while (currentEntry.next != null) {
+                if (currentEntry.next.key.equals(key)) {
+                    returnedValue = currentEntry.next.value;
+                    currentEntry.next = currentEntry.next.next;
+                    return returnedValue;
+                }
+                currentEntry = currentEntry.next;
+            }
+        }
+        return returnedValue;
     }
 
     @Override
@@ -132,14 +152,14 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     }
 
     private void ensureCapacity() {
-        if ((double)size/capacity > 0.75) {
+        if ((double) size / capacity > 0.75) {
             int newCapacity = capacity * 3 / 2 + 1;
 
             CustomEntry[] newBuckets = new CustomEntry[newCapacity];
 
             for (int i = 0; i < capacity; i++) {
-                CustomEntry<K,V> bucket = buckets[i];
-                while (bucket !=null) {
+                CustomEntry<K, V> bucket = buckets[i];
+                while (bucket != null) {
                     putInBucket(newBuckets, bucket);
                     bucket = bucket.next;
                 }
@@ -155,7 +175,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         int index = hash(entry.key, buckets.length);
 
-        CustomEntry<K,V> bucket = buckets[index];
+        CustomEntry<K, V> bucket = buckets[index];
         if (bucket == null) {
             buckets[index] = entry;
         } else {

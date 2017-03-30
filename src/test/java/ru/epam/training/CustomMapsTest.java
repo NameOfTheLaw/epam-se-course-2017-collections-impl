@@ -137,4 +137,24 @@ public class CustomMapsTest {
             assertThat(m.size(), is(i+1));
         }
     }
+
+    @Test
+    public void testRemoveMethodWorksProperly() {
+        int key = 4;
+
+        m.put(key, "aa");
+        m.remove(key);
+
+        assertFalse(m.containsKey(key));
+    }
+
+    @Test
+    public void testThatIfWeRemoveExistingKeyPreviousValueWillBeReturned() {
+        int key = 4;
+        String value = "aa";
+
+        m.put(key, value);
+
+        assertThat(m.remove(key), is(value));
+    }
 }
