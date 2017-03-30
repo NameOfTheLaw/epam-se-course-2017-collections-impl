@@ -8,6 +8,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     private CustomEntry<K, V>[] buckets = new CustomEntry[DEFAULT_CAPACITY];
     private int size = 0;
+    private int capacity = DEFAULT_CAPACITY;
 
     @Override
     public int size() {
@@ -23,14 +24,14 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public boolean containsKey(Object key) {
         Objects.requireNonNull(key);
 
-        CustomEntry<K, V> bucket = buckets[0];
-        if (bucket != null) {
-            while (bucket!=null) {
-                if (bucket.key.equals(key)) {
-                    return true;
-                }
-                bucket = bucket.next;
+        int index = hash(key);
+
+        CustomEntry<K, V> bucket = buckets[index];
+        while (bucket != null) {
+            if (bucket.key.equals(key)) {
+                return true;
             }
+            bucket = bucket.next;
         }
 
         return false;
@@ -38,22 +39,30 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(Object value) {
-        return buckets[0].value.equals(value);
+        for (int i = 0; i < capacity; i++) {
+            CustomEntry<K,V> bucket = buckets[i];
+            while (bucket !=null) {
+                if (bucket.value.equals(value)) {
+                    return true;
+                }
+                bucket = bucket.next;
+            }
+        }
+        return false;
     }
 
     @Override
     public V get(Object key) {
         Objects.requireNonNull(key);
 
-        CustomEntry<K, V> bucket = buckets[0];
-        if (bucket != null) {
-            while (bucket!=null) {
-                System.out.println(bucket.key);
-                if (bucket.key.equals(key)) {
-                    return bucket.value;
-                }
-                bucket = bucket.next;
+        int index = hash(key);
+
+        CustomEntry<K, V> bucket = buckets[index];
+        while (bucket != null) {
+            if (bucket.key.equals(key)) {
+                return bucket.value;
             }
+            bucket = bucket.next;
         }
         return null;
     }
@@ -62,22 +71,29 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public V put(K key, V value) {
         Objects.requireNonNull(key);
 
+        int index = hash(key);
+        CustomEntry<K, V> bucket = buckets[index];
+
         V returnedValue = null;
-        if (buckets[0] == null) {
-            buckets[0] = new CustomEntry<>(key, value);
-            size = 1;
+        if (buckets[index] == null) {
+            buckets[index] = new CustomEntry<>(key, value);
+            size++;
         } else {
-            CustomEntry<K, V> bucket = buckets[0];
             while (bucket.hasNext()) {
+                if (bucket.key.equals(key)) {
+                    returnedValue = bucket.value;
+                    bucket.value = value;
+                    return returnedValue;
+                }
                 bucket = bucket.next;
             }
             if (bucket.key.equals(key)) {
                 returnedValue = bucket.value;
                 bucket.value = value;
-            } else {
-                bucket.next = new CustomEntry<>(key, value);
-                size++;
+                return returnedValue;
             }
+            bucket.next = new CustomEntry<>(key, value);
+            size++;
         }
         return returnedValue;
     }
@@ -111,6 +127,22 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public Set<Entry<K, V>> entrySet() {
         return null;
+    }
+
+    /*
+    private void ensureCapacity() {
+        if ((double)size/capacity > 0.75) {
+            capacity = capacity * 3 / 2 + 1;
+
+            CustomEntry[] newBuckets = new CustomEntry[capacity];
+
+
+        }
+    }
+    */
+
+    private int hash(Object key) {
+        return key.hashCode() % capacity;
     }
 
     private class CustomEntry<K, V> implements Iterator<CustomEntry<K, V>> {
