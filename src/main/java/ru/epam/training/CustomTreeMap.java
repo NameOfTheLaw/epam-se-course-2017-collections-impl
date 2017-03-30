@@ -83,17 +83,18 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public V remove(Object key) {
-        V returnedValue = null;
-        root = remove(root, (K) key);
-        return returnedValue; //TODO: handle removing value
+        ValueContainer valueContainer = new ValueContainer();
+        root = remove(root, (K) key, valueContainer);
+        return valueContainer.oldValue;
     }
 
-    private Node<K,V> remove(Node<K,V> node, K key) {
+    private Node<K,V> remove(Node<K,V> node, K key, ValueContainer valueContainer) {
         if (node == null) {
             return null;
         }
 
         if (node.key.equals(key)) {
+            valueContainer.oldValue = node.value;
             size--;
             if (node.right == null) return node.left;
             if (node.left == null) return node.right;
@@ -104,9 +105,9 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
             node.right = deleteMin(nodeToDelete.right);
             node.left = nodeToDelete.left;
         } else if (node.key.compareTo(key) > 0) {
-            node.left = remove(node.left, key);
+            node.left = remove(node.left, key, valueContainer);
         } else {
-            node.right = remove(node.right, key);
+            node.right = remove(node.right, key, valueContainer);
         }
         return node;
     }
@@ -172,5 +173,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         public ValueContainer(V newValue) {
             this.newValue = newValue;
         }
+
+        public ValueContainer() {}
     }
 }

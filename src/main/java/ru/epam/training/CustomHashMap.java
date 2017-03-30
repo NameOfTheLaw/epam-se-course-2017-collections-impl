@@ -135,6 +135,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public void clear() {
         buckets = new CustomEntry[DEFAULT_CAPACITY];
+        capacity = DEFAULT_CAPACITY;
         size = 0;
     }
 
