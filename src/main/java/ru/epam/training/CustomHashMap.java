@@ -71,6 +71,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public V put(K key, V value) {
         Objects.requireNonNull(key);
 
+        ensureCapacity();
+
         int index = hash(key);
         CustomEntry<K, V> bucket = buckets[index];
 
@@ -129,19 +131,46 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
-    /*
     private void ensureCapacity() {
         if ((double)size/capacity > 0.75) {
-            capacity = capacity * 3 / 2 + 1;
+            int newCapacity = capacity * 3 / 2 + 1;
 
-            CustomEntry[] newBuckets = new CustomEntry[capacity];
+            CustomEntry[] newBuckets = new CustomEntry[newCapacity];
 
+            for (int i = 0; i < capacity; i++) {
+                CustomEntry<K,V> bucket = buckets[i];
+                while (bucket !=null) {
+                    putInBucket(newBuckets, bucket);
+                    bucket = bucket.next;
+                }
+            }
 
+            buckets = newBuckets;
+            capacity = newCapacity;
         }
     }
-    */
+
+    private void putInBucket(CustomEntry[] buckets, CustomEntry<K, V> entry) {
+        entry.next = null;
+
+        int index = hash(entry.key, buckets.length);
+
+        CustomEntry<K,V> bucket = buckets[index];
+        if (bucket == null) {
+            buckets[index] = entry;
+        } else {
+            while (bucket.hasNext()) {
+                bucket = bucket.next;
+            }
+            bucket.next = entry;
+        }
+    }
 
     private int hash(Object key) {
+        return hash(key, capacity);
+    }
+
+    private int hash(Object key, int capacity) {
         return key.hashCode() % capacity;
     }
 

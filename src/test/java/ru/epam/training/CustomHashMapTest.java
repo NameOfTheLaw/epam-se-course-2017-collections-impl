@@ -3,6 +3,7 @@ package ru.epam.training;
 import org.junit.Test;
 
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,6 +24,33 @@ public class CustomHashMapTest {
 
         assertThat(m.get(key1), is(value1));
         assertThat(m.get(key2), is(value2));
+    }
+
+    @Test
+    public void testThatMapCanPutMoreElementsThanCapacity() {
+        Map<Integer, String> m = new CustomHashMap<>();
+
+        IntStream.range(0, 100)
+                .forEach((i) -> {
+                    m.put(i, String.valueOf(i));
+                    assertThat(m.size(), is(i+1));
+                });
+    }
+
+    @Test
+    public void testThatMapCanPutAndMoreElementsThanCapacityAndCheckIt() {
+        Map<Integer, String> m = new CustomHashMap<>();
+
+        IntStream.range(0, 100)
+                .forEach((i) -> {
+                    m.put(i, String.valueOf(i));
+                    assertThat(m.size(), is(i+1));
+                });
+
+        IntStream.range(0, 100)
+                .forEach((i) ->
+                    assertThat(m.get(i), is(String.valueOf(i))
+                ));
     }
 
     private class ClassWithConstHashCode {
