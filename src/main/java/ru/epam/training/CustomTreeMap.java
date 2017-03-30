@@ -25,18 +25,12 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         Objects.requireNonNull(key);
 
         if (root == null) return false;
-        root.key.compareTo((K) key);
         return find(root, (K) key) != null;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        if (root == null) return false;
-        if (root.value == null) {
-            return value == null;
-        } else {
-            return root.value.equals(value);
-        }
+        return containsValue(root, value);
     }
 
     @Override
@@ -50,6 +44,53 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         ValueContainer valueContainer = new ValueContainer(value);
         root = put(root, key, valueContainer);
         return valueContainer.oldValue;
+    }
+
+    @Override
+    public V remove(Object key) {
+        ValueContainer valueContainer = new ValueContainer();
+        root = remove(root, (K) key, valueContainer);
+        return valueContainer.oldValue;
+    }
+
+    @Override
+    public void putAll(Map<? extends K, ? extends V> m) {
+
+    }
+
+    @Override
+    public void clear() {
+        root = null;
+        size = 0;
+    }
+
+    @Override
+    public Set<K> keySet() {
+        return null;
+    }
+
+    @Override
+    public Collection<V> values() {
+        return null;
+    }
+
+    @Override
+    public Set<Entry<K, V>> entrySet() {
+        return null;
+    }
+
+    private boolean containsValue(Node<K,V> node, Object value) {
+        if (node==null) return false;
+        if (node.value == null) {
+            if (value == null) {
+                return true;
+            }
+        } else {
+            if (node.value.equals(value)) {
+                return true;
+            }
+        }
+        return containsValue(node.left, value) || containsValue(node.right, value);
     }
 
     private Node<K, V> put(Node<K, V> node, K key, ValueContainer value) {
@@ -79,13 +120,6 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         } else {
             return find(node.right, key);
         }
-    }
-
-    @Override
-    public V remove(Object key) {
-        ValueContainer valueContainer = new ValueContainer();
-        root = remove(root, (K) key, valueContainer);
-        return valueContainer.oldValue;
     }
 
     private Node<K,V> remove(Node<K,V> node, K key, ValueContainer valueContainer) {
@@ -125,32 +159,6 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
             return min(node.left);
         }
         return node;
-    }
-
-    @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
-
-    }
-
-    @Override
-    public void clear() {
-        root = null;
-        size = 0;
-    }
-
-    @Override
-    public Set<K> keySet() {
-        return null;
-    }
-
-    @Override
-    public Collection<V> values() {
-        return null;
-    }
-
-    @Override
-    public Set<Entry<K, V>> entrySet() {
-        return null;
     }
 
     private class Node<K extends Comparable<K>, V> {

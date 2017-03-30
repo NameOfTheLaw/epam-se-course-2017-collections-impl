@@ -97,11 +97,11 @@ public class CustomMapsTest {
 
     @Test
     public void testThatWeCanPut10DifferentKeysInMap() {
-        IntStream.range(1, 10).forEach(
+        IntStream.range(0, 10).forEach(
                 i -> m.put(i, String.valueOf(i))
         );
 
-        IntStream.range(1, 10).forEach(
+        IntStream.range(0, 10).forEach(
                 i -> assertTrue(m.containsKey(i))
         );
     }
@@ -118,6 +118,23 @@ public class CustomMapsTest {
         m.put(1, value);
 
         assertTrue(m.containsValue(value));
+    }
+
+    @Test
+    public void testContainsValueMethodWorksProperlyOn10Elements() {
+        IntStream.range(0,10)
+                .forEach((i) -> m.put(i, String.valueOf(i)));
+
+        IntStream.range(0, 10).forEach(
+                i -> assertTrue(m.containsValue(String.valueOf(i)))
+        );
+    }
+
+    @Test
+    public void testContainsValueMethodWorksProperlyOnNullValue() {
+        m.put(5, null);
+
+        assertTrue(m.containsValue(null));
     }
 
     @Test

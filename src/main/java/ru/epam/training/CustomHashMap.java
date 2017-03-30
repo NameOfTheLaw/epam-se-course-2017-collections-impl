@@ -40,12 +40,16 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public boolean containsValue(Object value) {
         for (int i = 0; i < capacity; i++) {
-            CustomEntry<K, V> bucket = buckets[i];
-            while (bucket != null) {
-                if (bucket.value.equals(value)) {
+            CustomEntry<K, V> currentNode = buckets[i];
+            while (currentNode != null) {
+                if (currentNode.value == null) {
+                    if (value == null) {
+                        return true;
+                    }
+                } else if (currentNode.value.equals(value)) {
                     return true;
                 }
-                bucket = bucket.next;
+                currentNode = currentNode.next;
             }
         }
         return false;
