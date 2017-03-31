@@ -116,16 +116,40 @@ public class CustomLinkedList<T> implements List<T> {
 
     @Override
     public T set(int index, T element) {
-        return null;
+        checkIfIndexIsAppropriateToGet(index);
+
+        Node<T> NodeByIndex = getNodeByIndex(index);
+
+        T oldValue = NodeByIndex.value;
+        NodeByIndex.value = element;
+
+        return oldValue;
     }
 
     @Override
     public void add(int index, T element) {
+        checkIfIndexIsAppropriateToAdd(index);
 
+        Node<T> currentNode = head;
+        if (index != 0) {
+            currentNode = getNodeByIndex(index-1);
+        }
+
+        if (currentNode.hasNext()) {
+            Node<T> newNode = new Node<>(element);
+            newNode.next = currentNode.next;
+            currentNode.next = newNode;
+        } else {
+            currentNode.next = new Node<>(element);
+        }
+
+        size++;
     }
 
     @Override
     public T remove(int index) {
+        checkIfIndexIsAppropriateToGet(index);
+
         Node<T> current = getNodeByIndex(index - 1);
         size--;
         T value = current.next.value;
@@ -135,12 +159,23 @@ public class CustomLinkedList<T> implements List<T> {
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        Node<T> currentNode;
+        int i;
+        for (i = 0, currentNode = head.next; currentNode != null; i++, currentNode = currentNode.next) {
+            if (currentNode.value.equals(o)) return i;
+        }
+        return -1;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        Node<T> currentNode;
+        int lastIndexOf = -1;
+        int i;
+        for (i = 0, currentNode = head.next; currentNode != null; i++, currentNode = currentNode.next) {
+            if (currentNode.value.equals(o)) lastIndexOf = i;
+        }
+        return lastIndexOf;
     }
 
     @Override
@@ -159,16 +194,25 @@ public class CustomLinkedList<T> implements List<T> {
     }
 
     private Node<T> getNodeByIndex(int index) {
-
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIfIndexIsAppropriateToGet(index);
 
         Node<T> current = head.next;
         for (int i = 0; i < index; i++) {
             current = current.next;
         }
         return current;
+    }
+
+    private void checkIfIndexIsAppropriateToGet(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    private void checkIfIndexIsAppropriateToAdd(int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     private class Node<T> {
