@@ -50,10 +50,8 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public boolean add(T t) {
-        if (size == data.length) {
-            int newLength = (data.length * 3) / 2 + 1;
-            data = Arrays.copyOf(data, newLength);
-        }
+        ensureCapacity();
+
         data[size++] = t;
         return false;
     }
@@ -102,7 +100,7 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public T get(int index) {
-        validateIndex(index);
+        checkIndexAppropriationToGet(index);
 
         return (T) data[index];
     }
@@ -114,12 +112,18 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public void add(int index, T element) {
+        ensureCapacity();
+        checkIndexAppropriationToAdd(index);
 
+        int arrayTailLength = data.length - index;
+        System.arraycopy(data, index, data, index + 1, arrayTailLength-1);
+        data[index] = element;
+        size++;
     }
 
     @Override
     public T remove(int index) {
-        validateIndex(index);
+        checkIndexAppropriationToGet(index);
 
         T oldValue = (T) data[index];
 
@@ -161,9 +165,22 @@ public class CustomArrayList<T> implements List<T> {
         throw new UnsupportedOperationException();
     }
 
-    private void validateIndex(int index) {
+    private void checkIndexAppropriationToAdd(int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    private void checkIndexAppropriationToGet(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
+        }
+    }
+
+    private void ensureCapacity() {
+        if (size == data.length) {
+            int newLength = (data.length * 3) / 2 + 1;
+            data = Arrays.copyOf(data, newLength);
         }
     }
 }

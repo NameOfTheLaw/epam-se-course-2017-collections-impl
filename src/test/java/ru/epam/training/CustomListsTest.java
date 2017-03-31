@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -14,6 +15,7 @@ import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -212,6 +214,41 @@ public class CustomListsTest {
     @Test
     public void testThatLastIndexOfWillReturnSpecialValueIfWhereIsNoInputObjectInList() {
         assertThat(list.lastIndexOf("aaa"), is(-1));
+    }
+
+    @Test
+    public void testThatAddByIndexWorksProperly() {
+        list.add("1");
+        list.add("3");
+        list.add("4");
+
+        list.add(1, "2");
+
+        assertThat(list.get(0), is("1"));
+        assertThat(list.get(1), is("2"));
+        assertThat(list.get(2), is("3"));
+        assertThat(list.get(3), is("4"));
+    }
+
+    @Test
+    public void testThatAddByIndexWorksProperlyOnEmptyList() {
+        list.add(0, "2");
+
+        assertThat(list.get(0), is("2"));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testThatAddByIndexThrowsExceptionIfIndexIsNotAppropriate() {
+        list.add(-1, "2");
+    }
+
+    @Test
+    public void testThatAddByIndexWorksProperlyWithNullInputValue() {
+        list.add("1");
+
+        list.add(1, null);
+
+        assertNull(list.get(1));
     }
 
     private void fillList(int size) {
