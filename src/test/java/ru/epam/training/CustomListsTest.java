@@ -102,16 +102,7 @@ public class CustomListsTest {
     }
 
     @Test
-    public void testThatWeCanRemoveExistedElementFromList() throws Exception {
-        fillList(10);
-
-        list.remove("4");
-
-        assertFalse(list.contains("4"));
-    }
-
-    @Test
-    public void testThatWeCanDeleteElementByIndex() throws Exception {
+    public void testThatWeCanRemoveElementByIndex() throws Exception {
         fillList(10);
 
         String removed = list.remove(2);
@@ -120,8 +111,29 @@ public class CustomListsTest {
         assertThat(removed, is(equalTo("2")));
     }
 
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testThatWeCantRemoveElementByIndexEqualsSize() throws Exception {
+        int size = 5;
+        fillList(size);
+        list.remove(size);
+    }
+
     @Test
-    public void testThatWeCanDeleteLastElement() throws Exception {
+    public void testThatWeCanRemoveExistedElementFromList() throws Exception {
+        fillList(10);
+
+        list.remove("4");
+
+        assertFalse(list.contains("4"));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testThatWeCantRemoveElementByIndexBelowZero() throws Exception {
+        list.remove(-5);
+    }
+
+    @Test
+    public void testThatWeCanRemoveLastElement() throws Exception {
         fillList(10);
 
         int prevSize = list.size();
@@ -133,10 +145,73 @@ public class CustomListsTest {
     }
 
     @Test
-    public void testThatWeCantDeleteNonExistentElement() throws Exception {
+    public void testThatWeCantRemoveNonExistentElement() throws Exception {
         fillList(10);
 
-        assertFalse(list.remove("nonpresentedinlistobject"));
+        assertFalse(list.remove("ccc"));
+    }
+
+    @Test
+    public void testThatRemoveByValueMethodWorksProperlyOnNullInputValue() {
+        assertFalse(list.remove(null));
+    }
+
+    @Test
+    public void testIsEmptyWorksProperlyOnRemoving() {
+        list.add("aa");
+        list.remove("aa");
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testIndexOfWorksProperly() {
+        fillList(10);
+
+        IntStream.range(0, 10)
+                .forEach((i) -> assertThat(list.indexOf(String.valueOf(i)), is(i)));
+    }
+
+    @Test
+    public void testIndexOfWorksProperlyIfThereIsSeveralEqualElement() {
+        list.add("0");
+        list.add("1");
+        list.add("aaa");
+        list.add("3");
+        list.add("aaa");
+        list.add("5");
+
+        assertThat(list.indexOf("aaa"), is(2));
+    }
+
+    @Test
+    public void testThatIndexOfWillReturnSpecialValueIfWhereIsNoInputObjectInList() {
+        assertThat(list.indexOf("aaa"), is(-1));
+    }
+
+    @Test
+    public void testLastIndexOfWorksProperly() {
+        fillList(10);
+
+        IntStream.range(0, 10)
+                .forEach((i) -> assertThat(list.lastIndexOf(String.valueOf(i)), is(i)));
+    }
+
+    @Test
+    public void testLastIndexOfWorksProperlyIfThereIsSeveralEqualElement() {
+        list.add("0");
+        list.add("1");
+        list.add("aaa");
+        list.add("3");
+        list.add("aaa");
+        list.add("5");
+
+        assertThat(list.lastIndexOf("aaa"), is(4));
+    }
+
+    @Test
+    public void testThatLastIndexOfWillReturnSpecialValueIfWhereIsNoInputObjectInList() {
+        assertThat(list.lastIndexOf("aaa"), is(-1));
     }
 
     private void fillList(int size) {
