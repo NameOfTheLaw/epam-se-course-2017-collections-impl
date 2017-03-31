@@ -8,6 +8,7 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.CoreMatchers.is;
@@ -45,7 +46,8 @@ public class CustomListsTest {
     @Test
     public void testThatListNotEmptyAfterAddingElement() {
         list.add("aaaa");
-        assertThat(list.isEmpty(), is(false));
+
+        assertFalse(list.isEmpty());
     }
 
     @Test
@@ -65,7 +67,6 @@ public class CustomListsTest {
 
     @Test
     public void testThatListContainsNullIfItWasAdded() {
-
         list.add(null);
 
         assertTrue(list.contains(null));
@@ -81,73 +82,66 @@ public class CustomListsTest {
     public void testThatListsSizeIsDynamic() throws Exception {
         int size = 50;
 
-        for (int i = 0; i < size; i++) {
-            list.add(String.valueOf(i));
-        }
+        fillList(size);
 
         assertThat(list.size(), is(size));
     }
 
     @Test
     public void testThatWeCanGetElementByIndex() {
+        fillList(10);
 
-        fillList();
-
-        assertThat(list.get(1), is(equalTo("aa1a")));
+        assertThat(list.get(1), is("1"));
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testThatWeCantGetElementByIndexMoreThenSize() throws Exception {
-
-        fillList();
+        fillList(10);
 
         list.get(list.size());
     }
 
     @Test
     public void testThatWeCanRemoveExistedElementFromList() throws Exception {
-        fillList();
+        fillList(10);
 
-        list.remove("ssss");
+        list.remove("4");
 
-        assertFalse("contains", list.contains("ssss"));
+        assertFalse(list.contains("4"));
     }
 
     @Test
     public void testThatWeCanDeleteElementByIndex() throws Exception {
-        fillList();
+        fillList(10);
 
         String removed = list.remove(2);
 
-        assertFalse(list.contains("aa2a"));
-        assertThat(removed, is(equalTo("aa2a")));
+        assertFalse(list.contains("2"));
+        assertThat(removed, is(equalTo("2")));
     }
 
     @Test
     public void testThatWeCanDeleteLastElement() throws Exception {
-        fillList();
+        fillList(10);
 
         int prevSize = list.size();
 
         list.remove(list.size() - 1);
 
-        assertFalse(list.contains("aa4a"));
+        assertFalse(list.contains("9"));
         assertThat(list.size(), is(equalTo(prevSize - 1)));
     }
 
     @Test
     public void testThatWeCantDeleteNonExistentElement() throws Exception {
-        fillList();
+        fillList(10);
 
-        assertFalse(list.remove("sadasdasd"));
+        assertFalse(list.remove("nonpresentedinlistobject"));
     }
 
-    private void fillList() {
-        list.add("aa0a");
-        list.add("aa1a");
-        list.add("aa2a");
-        list.add("ssss");
-        list.add("aa3a");
-        list.add("aa4a");
+    private void fillList(int size) {
+        IntStream.range(0, size)
+                .mapToObj(String::valueOf)
+                .forEach(list::add);
     }
 }
