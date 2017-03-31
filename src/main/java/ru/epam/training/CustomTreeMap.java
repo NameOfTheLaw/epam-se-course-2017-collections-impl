@@ -17,7 +17,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return size == 0;
     }
 
     @Override
@@ -35,12 +35,17 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public V get(Object key) {
-        return null;
+        Objects.requireNonNull(key);
+
+        Node<K,V> findedNode = find(root, (K) key);
+
+        return findedNode == null ? null : findedNode.value;
     }
 
     @Override
     public V put(K key, V value) {
         Objects.requireNonNull(key);
+
         ValueContainer valueContainer = new ValueContainer(value);
         root = put(root, key, valueContainer);
         return valueContainer.oldValue;
@@ -48,6 +53,8 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public V remove(Object key) {
+        Objects.requireNonNull(key);
+
         ValueContainer valueContainer = new ValueContainer();
         root = remove(root, (K) key, valueContainer);
         return valueContainer.oldValue;
@@ -128,8 +135,9 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         }
 
         if (node.key.equals(key)) {
-            valueContainer.oldValue = node.value;
             size--;
+            valueContainer.oldValue = node.value;
+
             if (node.right == null) return node.left;
             if (node.left == null) return node.right;
 

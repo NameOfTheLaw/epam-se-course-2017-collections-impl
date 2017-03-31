@@ -18,7 +18,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return size==0;
     }
 
     @Override
