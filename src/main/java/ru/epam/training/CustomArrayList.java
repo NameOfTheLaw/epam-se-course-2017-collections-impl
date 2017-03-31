@@ -107,7 +107,12 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public T set(int index, T element) {
-        return null;
+        checkIndexAppropriationToGet(index);
+
+        T returnedValue = (T) data[index];
+        data[index] = element;
+
+        return returnedValue;
     }
 
     @Override

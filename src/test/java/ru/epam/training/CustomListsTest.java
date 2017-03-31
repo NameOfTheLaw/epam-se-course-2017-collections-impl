@@ -251,6 +251,64 @@ public class CustomListsTest {
         assertNull(list.get(1));
     }
 
+    @Test
+    public void testThatWeCanSetValueByIndex() {
+        list.add("0");
+        list.add("2");
+        list.add("2");
+
+        list.set(1, "1");
+
+        assertThat(list.get(0), is("0"));
+        assertThat(list.get(1), is("1"));
+        assertThat(list.get(2), is("2"));
+    }
+
+    @Test
+    public void testThatListSizeDoesntChangeIfWeSetValue() {
+        int size = 3;
+
+        list.add("0");
+        list.add("2");
+        list.add("2");
+
+        assertThat(list.size(), is(size));
+        list.set(1, "1");
+        assertThat(list.size(), is(size));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testThatWeCantSetValueForNonExistingElement() {
+        list.add("0");
+        list.add("1");
+        list.add("2");
+
+        list.set(list.size(), "3");
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testThatSetMethodThrowsExceptionIfIndexIsNotAppropriate() {
+        list.set(-1, "1");
+    }
+
+    @Test
+    public void testThatWeCanSetNullValue() {
+        list.add("0");
+        list.add("2");
+        list.add("2");
+
+        list.set(1, null);
+
+        assertNull(list.get(1));
+    }
+
+    @Test
+    public void testThatSetMethodReturnsPreviousValue() {
+        list.add("0");
+
+        assertThat(list.set(0, "1"), is("0"));
+    }
+
     private void fillList(int size) {
         IntStream.range(0, size)
                 .mapToObj(String::valueOf)
