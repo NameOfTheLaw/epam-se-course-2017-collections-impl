@@ -4,9 +4,9 @@ import java.util.*;
 
 public class CustomArrayList<T> implements List<T> {
 
-    public static final int CAPACITY = 10;
+    public static final int DEFAULT_CAPACITY = 10;
 
-    private Object[] data = new Object[CAPACITY];
+    private Object[] data = new Object[DEFAULT_CAPACITY];
     private int size = 0;
 
     @Override
@@ -40,12 +40,12 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -94,31 +94,31 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public void clear() {
-        data = new Object[CAPACITY];
+        data = new Object[DEFAULT_CAPACITY];
         size = 0;
     }
 
     @Override
     public T get(int index) {
-        checkIndexAppropriationToGet(index);
+        checkIfIndexIsAppropriateToGet(index);
 
         return (T) data[index];
     }
 
     @Override
     public T set(int index, T element) {
-        checkIndexAppropriationToGet(index);
+        checkIfIndexIsAppropriateToGet(index);
 
-        T returnedValue = (T) data[index];
+        T oldValue = (T) data[index];
         data[index] = element;
 
-        return returnedValue;
+        return oldValue;
     }
 
     @Override
     public void add(int index, T element) {
         ensureCapacity();
-        checkIndexAppropriationToAdd(index);
+        checkIfIndexIsAppropriateToAdd(index);
 
         int arrayTailLength = data.length - index;
         System.arraycopy(data, index, data, index + 1, arrayTailLength-1);
@@ -128,7 +128,7 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public T remove(int index) {
-        checkIndexAppropriationToGet(index);
+        checkIfIndexIsAppropriateToGet(index);
 
         T oldValue = (T) data[index];
 
@@ -170,13 +170,13 @@ public class CustomArrayList<T> implements List<T> {
         throw new UnsupportedOperationException();
     }
 
-    private void checkIndexAppropriationToAdd(int index) {
+    private void checkIfIndexIsAppropriateToAdd(int index) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
         }
     }
 
-    private void checkIndexAppropriationToGet(int index) {
+    private void checkIfIndexIsAppropriateToGet(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
@@ -184,7 +184,7 @@ public class CustomArrayList<T> implements List<T> {
 
     private void ensureCapacity() {
         if (size == data.length) {
-            int newLength = (data.length * 3) / 2 + 1;
+            int newLength = data.length * 3 / 2 + 1;
             data = Arrays.copyOf(data, newLength);
         }
     }

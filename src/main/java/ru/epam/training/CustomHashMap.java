@@ -18,7 +18,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        return size==0;
+        return size == 0;
     }
 
     @Override
@@ -181,7 +181,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     private void putEntryInBucketsArray(CustomEntry[] buckets, CustomEntry<K, V> entry) {
         entry.next = null;
 
-        int index = hash(entry.key);
+        int index = hash(entry.key, buckets.length);
 
         CustomEntry<K, V> bucket = buckets[index];
         if (bucket == null) {
@@ -202,7 +202,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return key.hashCode() % capacity;
     }
 
-    private class CustomEntry<K, V> implements Iterator<CustomEntry<K, V>> {
+    private class CustomEntry<K, V> {
 
         private final K key;
         private V value;
@@ -215,10 +215,6 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         public boolean hasNext() {
             return this.next != null;
-        }
-
-        public CustomEntry<K, V> next() {
-            return this.next;
         }
     }
 }
