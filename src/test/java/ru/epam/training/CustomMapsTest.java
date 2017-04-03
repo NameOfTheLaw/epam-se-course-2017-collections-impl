@@ -200,7 +200,7 @@ public class CustomMapsTest {
 
         assertThat(m.size(), is(20));
 
-        IntStream.range(0, 20)
+        getShuffledList(20)
                 .forEach((i) -> m.remove(i));
 
         assertThat(m.size(), is(0));
@@ -252,17 +252,22 @@ public class CustomMapsTest {
     }
 
     private void fillMapToSize(Map<Integer, String> map, int size) {
+        getShuffledList(size)
+                .forEach((i) -> map.put(i, String.valueOf(i)));
+    }
+
+    private void fillMapToSize(int size) {
+        fillMapToSize(m, size);
+    }
+
+    private List<Integer> getShuffledList(int size) {
         List<Integer> integerList = IntStream.range(0, size)
                 .boxed()
                 .collect(Collectors.toList());
 
         Collections.shuffle(integerList);
 
-        integerList.forEach((i) -> map.put(i, String.valueOf(i)));
-    }
-
-    private void fillMapToSize(int size) {
-        fillMapToSize(m, size);
+        return integerList;
     }
 
 }
