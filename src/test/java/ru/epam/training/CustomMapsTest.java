@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -250,9 +251,14 @@ public class CustomMapsTest {
                 });
     }
 
-    private void fillMapToSize(Map map, int size) {
-        IntStream.range(0, size)
-                .forEach((i) -> map.put(i, String.valueOf(i)));
+    private void fillMapToSize(Map<Integer, String> map, int size) {
+        List<Integer> integerList = IntStream.range(0, size)
+                .boxed()
+                .collect(Collectors.toList());
+
+        Collections.shuffle(integerList);
+
+        integerList.forEach((i) -> map.put(i, String.valueOf(i)));
     }
 
     private void fillMapToSize(int size) {
