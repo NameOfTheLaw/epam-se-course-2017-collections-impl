@@ -99,6 +99,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
                 bucket = bucket.next;
             }
         }
+
         return null;
     }
 
@@ -168,7 +169,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
             for (int i = 0; i < capacity; i++) {
                 CustomEntry<K, V> currentEntry = buckets[i];
                 while (currentEntry != null) {
-                    putEntryInBucketsArray(newBuckets, currentEntry);
+                    putEntryInBucketsArray(newBuckets, new CustomEntry<>(currentEntry));
                     currentEntry = currentEntry.next;
                 }
             }
@@ -178,14 +179,12 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    private void putEntryInBucketsArray(CustomEntry[] buckets, CustomEntry<K, V> entry) {
-        entry.next = null;
+    private void putEntryInBucketsArray(CustomEntry[] bucketsToPutIn, CustomEntry<K, V> entry) {
+        int index = hash(entry.key, bucketsToPutIn.length);
 
-        int index = hash(entry.key, buckets.length);
-
-        CustomEntry<K, V> bucket = buckets[index];
+        CustomEntry<K, V> bucket = bucketsToPutIn[index];
         if (bucket == null) {
-            buckets[index] = entry;
+            bucketsToPutIn[index] = entry;
         } else {
             while (bucket.hasNext()) {
                 bucket = bucket.next;
@@ -211,6 +210,11 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         CustomEntry(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+
+        public CustomEntry(CustomEntry<K, V> currentEntry) {
+            this.key = currentEntry.key;
+            this.value = currentEntry.value;
         }
 
         public boolean hasNext() {
