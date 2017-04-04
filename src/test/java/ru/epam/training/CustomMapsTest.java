@@ -21,24 +21,21 @@ import static org.junit.Assert.assertTrue;
 public class CustomMapsTest {
 
     private Map<Integer, String> m;
-    private Map<Integer, String> secondMap;
 
-    public CustomMapsTest(Map<Integer, String> m, Map<Integer, String> m2) {
+    public CustomMapsTest(Map<Integer, String> m) {
         this.m = m;
-        this.secondMap = m2;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(
-                new Object[]{new CustomTreeMap(), new CustomTreeMap()},
-                new Object[]{new CustomHashMap(), new CustomHashMap()});
+                new Object[]{new CustomTreeMap()},
+                new Object[]{new CustomHashMap()});
     }
 
     @Before
     public void init() {
         m.clear();
-        secondMap.clear();
     }
 
     @Test
