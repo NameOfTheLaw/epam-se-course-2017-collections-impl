@@ -24,7 +24,6 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     public boolean containsKey(Object key) {
         Objects.requireNonNull(key);
 
-        if (root == null) return false;
         return find(root, (K) key) != null;
     }
 
@@ -46,18 +45,18 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     public V put(K key, V value) {
         Objects.requireNonNull(key);
 
-        ValueContainer valueContainer = new ValueContainer(value);
-        root = put(root, key, valueContainer);
-        return valueContainer.oldValue;
+        ValuesPair valuesPair = new ValuesPair(value);
+        root = put(root, key, valuesPair);
+        return valuesPair.oldValue;
     }
 
     @Override
     public V remove(Object key) {
         Objects.requireNonNull(key);
 
-        ValueContainer valueContainer = new ValueContainer();
-        root = remove(root, (K) key, valueContainer);
-        return valueContainer.oldValue;
+        ValuesPair valuesPair = new ValuesPair();
+        root = remove(root, (K) key, valuesPair);
+        return valuesPair.oldValue;
     }
 
     @Override
@@ -88,19 +87,16 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     private boolean containsValue(Node<K, V> node, Object value) {
         if (node == null) return false;
+
         if (node.value == null) {
-            if (value == null) {
-                return true;
-            }
-        } else {
-            if (node.value.equals(value)) {
-                return true;
-            }
+            if (value == null) return true;
+        } else if (node.value.equals(value)) {
+            return true;
         }
         return containsValue(node.left, value) || containsValue(node.right, value);
     }
 
-    private Node<K, V> put(Node<K, V> node, K key, ValueContainer value) {
+    private Node<K, V> put(Node<K, V> node, K key, ValuesPair value) {
         if (node == null) {
             size++;
             return new Node<>(key, value.newValue, Node.RED);
@@ -123,9 +119,8 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     }
 
     private Node<K, V> find(Node<K, V> node, K key) {
-        if (node == null) {
-            return null;
-        }
+        if (node == null) return null;
+
         if (node.key.equals(key)) {
             return node;
         } else if (node.key.compareTo(key) > 0) {
@@ -135,14 +130,12 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         }
     }
 
-    private Node<K, V> remove(Node<K, V> node, K key, ValueContainer valueContainer) {
-        if (node == null) {
-            return null;
-        }
+    private Node<K, V> remove(Node<K, V> node, K key, ValuesPair valuesPair) {
+        if (node == null) return null;
 
         if (node.key.equals(key)) {
             size--;
-            valueContainer.oldValue = node.value;
+            valuesPair.oldValue = node.value;
 
             if (node.right == null) return node.left;
             if (node.left == null) return node.right;
@@ -153,38 +146,33 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
             node.right = deleteMin(nodeToDelete.right);
             node.left = nodeToDelete.left;
         } else if (node.key.compareTo(key) > 0) {
-            node.left = remove(node.left, key, valueContainer);
+            node.left = remove(node.left, key, valuesPair);
         } else {
-            node.right = remove(node.right, key, valueContainer);
+            node.right = remove(node.right, key, valuesPair);
         }
         return node;
     }
 
     private Node<K, V> deleteMin(Node<K, V> node) {
-        if (node.left == null) {
-            return node.right;
-        }
+        if (node.left == null) return node.right;
+
         node.left = deleteMin(node.left);
         return node;
     }
 
     private Node<K, V> min(Node<K, V> node) {
-        if (node.left != null) {
-            return min(node.left);
-        }
-        return node;
+        return node.left != null ? min(node.left) : node;
     }
 
     private boolean isRed(Node node) {
-        if (node == null) return false;
-
-        return node.color == Node.RED;
+        return node != null && node.color == Node.RED;
     }
 
     private Node rotateLeft(Node h) {
         Node x = h.right;
         h.right = x.left;
         x.left = h;
+
         x.color = h.color;
         h.color = Node.RED;
         return x;
@@ -194,6 +182,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         Node x = h.left;
         h.left = x.right;
         x.right = h;
+
         x.color = h.color;
         h.color = Node.RED;
         return x;
@@ -206,18 +195,14 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     }
 
     private class Node<K extends Comparable<K>, V> {
+        private static final boolean RED = true;
+        private static final boolean BLACK = false;
+
         private final K key;
         private V value;
         private Node<K, V> left;
         private Node<K, V> right;
-        private static final boolean RED = true;
-        private static final boolean BLACK = false;
         private boolean color;
-
-        public Node(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
 
         public Node(K key, V value, boolean color) {
             this.key = key;
@@ -227,14 +212,15 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     }
 
-    private class ValueContainer {
+    private class ValuesPair {
         private V newValue;
         private V oldValue;
 
-        public ValueContainer(V newValue) {
+        public ValuesPair(V newValue) {
             this.newValue = newValue;
         }
 
-        public ValueContainer() {}
+        public ValuesPair() {
+        }
     }
 }
