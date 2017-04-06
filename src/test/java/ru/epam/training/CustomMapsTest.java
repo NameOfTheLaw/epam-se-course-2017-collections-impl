@@ -22,15 +22,16 @@ public class CustomMapsTest {
 
     private Map<Integer, String> m;
 
-    public CustomMapsTest(Map<Integer, String> m) {
+    public CustomMapsTest(Map<Integer, String> m, String className) {
         this.m = m;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[]{new CustomTreeMap()},
-                new Object[]{new CustomHashMap()});
+        return Arrays.asList(new Object[][]{
+                {new CustomTreeMap(), "TreeMap"},
+                {new CustomHashMap(), "HashMap"}
+            });
     }
 
     @Before

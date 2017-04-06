@@ -23,15 +23,15 @@ public class CustomListsTest {
 
     private List<String> list;
 
-    public CustomListsTest(List<String> list) {
+    public CustomListsTest(List<String> list, String className) {
         this.list = list;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{1}")
     public static Collection<Object> data() {
-        return Arrays.asList(new Object[]{
-                new CustomArrayList(),
-                new CustomLinkedList()
+        return Arrays.asList(new Object[][] {
+                {new CustomArrayList(), "ArrayList"},
+                {new CustomLinkedList(), "LinkedList"}
         });
     }
 
