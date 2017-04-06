@@ -37,7 +37,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     public V get(Object key) {
         Objects.requireNonNull(key);
 
-        Node<K,V> findResult = find(root, (K) key);
+        Node<K, V> findResult = find(root, (K) key);
 
         return findResult == null ? null : findResult.value;
     }
@@ -86,8 +86,8 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         throw new UnsupportedOperationException();
     }
 
-    private boolean containsValue(Node<K,V> node, Object value) {
-        if (node==null) return false;
+    private boolean containsValue(Node<K, V> node, Object value) {
+        if (node == null) return false;
         if (node.value == null) {
             if (value == null) {
                 return true;
@@ -103,8 +103,9 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     private Node<K, V> put(Node<K, V> node, K key, ValueContainer value) {
         if (node == null) {
             size++;
-            return new Node<>(key, value.newValue);
+            return new Node<>(key, value.newValue, Node.RED);
         }
+
         if (node.key.equals(key)) {
             value.oldValue = node.value;
             node.value = value.newValue;
@@ -113,6 +114,11 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         } else {
             node.right = put(node.right, key, value);
         }
+
+        if (isRed(node.right) && !isRed(node.left)) node = rotateLeft(node);
+        if (isRed(node.left) && isRed(node.left.left)) node = rotateRight(node);
+        if (isRed(node.left) && isRed(node.right)) flipColors(node);
+
         return node;
     }
 
@@ -129,7 +135,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         }
     }
 
-    private Node<K,V> remove(Node<K,V> node, K key, ValueContainer valueContainer) {
+    private Node<K, V> remove(Node<K, V> node, K key, ValueContainer valueContainer) {
         if (node == null) {
             return null;
         }
@@ -141,7 +147,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
             if (node.right == null) return node.left;
             if (node.left == null) return node.right;
 
-            Node<K,V> nodeToDelete = node;
+            Node<K, V> nodeToDelete = node;
 
             node = min(nodeToDelete.right);
             node.right = deleteMin(nodeToDelete.right);
@@ -163,10 +169,40 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     }
 
     private Node<K, V> min(Node<K, V> node) {
-        if (node.left !=null) {
+        if (node.left != null) {
             return min(node.left);
         }
         return node;
+    }
+
+    private boolean isRed(Node node) {
+        if (node == null) return false;
+
+        return node.color == Node.RED;
+    }
+
+    private Node rotateLeft(Node h) {
+        Node x = h.right;
+        h.right = x.left;
+        x.left = h;
+        x.color = h.color;
+        h.color = Node.RED;
+        return x;
+    }
+
+    private Node rotateRight(Node h) {
+        Node x = h.left;
+        h.left = x.right;
+        x.right = h;
+        x.color = h.color;
+        h.color = Node.RED;
+        return x;
+    }
+
+    private void flipColors(Node h) {
+        h.color = Node.RED;
+        h.left.color = Node.BLACK;
+        h.right.color = Node.BLACK;
     }
 
     private class Node<K extends Comparable<K>, V> {
@@ -174,10 +210,19 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         private V value;
         private Node<K, V> left;
         private Node<K, V> right;
+        private static final boolean RED = true;
+        private static final boolean BLACK = false;
+        private boolean color;
 
         public Node(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+
+        public Node(K key, V value, boolean color) {
+            this.key = key;
+            this.value = value;
+            this.color = color;
         }
 
     }
