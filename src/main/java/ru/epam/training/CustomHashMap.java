@@ -2,10 +2,29 @@ package ru.epam.training;
 
 import java.util.*;
 
+/**
+ * <i>Hash table</i> implementation of the <code>Map</code> interface.
+ *
+ * <code>CustomHashMap</code> has inner array of buckets. Each time the map <i>load factor</i>
+ * (<code>size/capacity</code>) is getting bigger than <code>0.75</code> capacity multiplies
+ * by <code>3/2</code> and array of buckets is getting replaced to the bigger array.
+ *
+ * The performance of the <code>CustomHashMap</code> based on the hashcode realisation
+ * of the keys.
+ *
+ * The <code>get</code>, <code>put</code>, <code>containsKey</code> operations runs in
+ * constant time (exclude the situation then <code>size/capacity >= MAX_LOAD_FACTOR</code>).
+ * The <code>containsValue</code> method runs throw all the keys in the map.
+ *
+ * <code>CustomHastMap</code> support null values and doesn't support null keys.
+ *
+ * @param <K> type of keys maintained by map.
+ * @param <V> type of values maintained by map.
+ */
 public class CustomHashMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_CAPACITY = 16;
-    private static final double LOAD_FACTOR = 0.75;
+    private static final double MAX_LOAD_FACTOR = 0.75;
 
     private CustomEntry<K, V>[] buckets = new CustomEntry[DEFAULT_CAPACITY];
     private int size = 0;
@@ -161,7 +180,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     }
 
     private void ensureCapacity() {
-        if ((double) size / capacity > LOAD_FACTOR) {
+        if ((double) size / capacity > MAX_LOAD_FACTOR) {
             int newCapacity = capacity * 3 / 2 + 1;
 
             CustomEntry[] newBuckets = new CustomEntry[newCapacity];

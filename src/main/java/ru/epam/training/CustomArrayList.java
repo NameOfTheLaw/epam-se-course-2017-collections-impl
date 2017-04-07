@@ -2,9 +2,23 @@ package ru.epam.training;
 
 import java.util.*;
 
+/**
+ * <i>Array</i> implementation of the <code>List</code> interface.
+ *
+ * Inner array is resizable. Each time list has his <code>capacity</code> and <code>size</code>.
+ * Every time list size is getting equals to capacity it multiplies by <code>3/2</code>.
+ *
+ * The <code>get</code>, <code>set</code> methods run in constant time (exclude the situation
+ * then <code></code>size == capacity</code>). The <code>add</code>, <code>remove</code> methods
+ * create new array. So this operations time based on <code>System.arrayCopy</code> native implementation.
+ *
+ * <code>CustomArrayList</code> supports <code>null</code> values.
+ *
+ * @param <T> type of values maintained by list.
+ */
 public class CustomArrayList<T> implements List<T> {
 
-    public static final int DEFAULT_CAPACITY = 10;
+    private static final int DEFAULT_CAPACITY = 10;
 
     private Object[] data = new Object[DEFAULT_CAPACITY];
     private int size = 0;

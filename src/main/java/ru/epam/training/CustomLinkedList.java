@@ -5,6 +5,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+/**
+ * <i>Singly linked list</i> implementation of the <code>List</code> interface.
+ *
+ * <code>head</code> element of the list is pseudo element. It has no value in it and doesn't
+ * count in list size. It only has link to the first element of the <i>linked list</i>.
+ *
+ * Due to the nature of the linked list most operation runs in linear time.
+ *
+ * <code>CustomArrayList</code> supports <code>null</code> values.
+ *
+ * @param <T> type of values maintained by list.
+ */
 public class CustomLinkedList<T> implements List<T> {
 
     private Node<T> head = new Node<>(null);

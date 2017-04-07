@@ -5,6 +5,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * <i>Red-black tree</i> implementation of the <code>Map</code> interface.
+ *
+ * <code>CustomTreeMap</code> is sorted according to the <code>compareTo</code> methods of the keys.
+ *
+ * Due to the nature of the <i>red-black tree</i> most operation (<code>get</code>, <code>put</code>,
+ * <code>remove</code>, <code>containsKey</code>) runs in <code>log(n)</code> time.
+ *
+ * <code>CustomHastMap</code> support null values and doesn't support null keys.
+ *
+ * @param <K> type of keys maintained by map.
+ * @param <V> type of values maintained by map.
+ */
 public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     private Node<K, V> root;
